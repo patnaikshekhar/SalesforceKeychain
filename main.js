@@ -1,37 +1,48 @@
 'use strict';
 
 const electron = require('electron');
-// Module to control application life.
 const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+const Tray = electron.Tray;
+const Menu = electron.Menu;
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
-
-  // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+// Initialize the Application
+function initialize() {
+  
+  // Create the tray icon
+  let appIcon = new Tray(`${__dirname}/logo.png`);
+  
+  // TODO: Get the list of items from the store
+  var storeMenuItems = [
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio' },
+    { label: 'Item4', type: 'radio' }
+  ];
+  
+  // Concatanate the fixed items
+  var menuItems = storeMenuItems.concat([
+    {
+      type: 'separator',
+      label: undefined
+    },
+    {
+      label: 'Add Account',
+      type: undefined,
+      click: () => {
+          // TODO: Show Add Accounts screen 
+      }
+    }
+  ]);
+  
+  let contextMenu = Menu.buildFromTemplate(menuItems);
+  
+  appIcon.setToolTip('This is my application.');
+  appIcon.setContextMenu(contextMenu);
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-app.on('ready', createWindow);
+app.on('ready', initialize);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -42,10 +53,4 @@ app.on('window-all-closed', function () {
   }
 });
 
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
+app.on('activate', function () {});
