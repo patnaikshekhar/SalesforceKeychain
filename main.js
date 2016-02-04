@@ -73,6 +73,9 @@ function refreshAccounts(callback) {
 
 // Handle Set in database message
 ipc.on('putDB', function (event, args) {
+    
+    console.log('putDB', args);
+    
     // Actual document to be inserted
     let doc = args.doc;
     
@@ -80,22 +83,29 @@ ipc.on('putDB', function (event, args) {
     let id = args.id;
     
     // Insert into database and send event back to sender
-    db.insert(doc, function (err, newDoc) {
-        event.sender.send('putDBCompleted', {
-            error: err,
-            id: id
-        });
+    db.remove({}, {multi: true}, () => {
+        db.insert(doc, function (err, newDoc) {
+            console.log('putDB-insert', err, newDoc);
+            event.sender.send('putDBCompleted', {
+                error: err,
+                id: id
+            });
+        });    
     });
+    
 });
 
 // Handle Get from database message
 ipc.on('getDB', function (event, args) {
+    
+    console.log('getDB', event, args);
     
     // Request Id
     let id = args.id;
     
     // Find in database and send documents back to sender
     refreshAccounts((err, docs) => {
+        console.log('getDB-result', docs);
         event.sender.send('getDBCompleted', {
             err: err,
             docs: docs,

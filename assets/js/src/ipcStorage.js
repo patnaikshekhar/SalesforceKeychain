@@ -19,7 +19,9 @@ var ipcStorage = {
             var id = args.id;
             
             if (id === thisRequestId) {
-                callback(args.docs);    
+                callback({
+                    accounts: args.docs
+                });    
             }
         });
     },
