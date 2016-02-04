@@ -6,10 +6,14 @@ const Tray = electron.Tray;
 const Menu = electron.Menu;
 const Datastore = require('nedb');
 const db = new Datastore({ filename: `${__dirname}/data.db`, autoload: true });
-const ipc = require('ipc');
+const ipc = electron.ipcMain;
+const BrowserWindow = electron.BrowserWindow;
 
 // Initialize the Application
 function initialize() {
+  
+  const addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
+  addAccountPopup.loadURL(`file://${__dirname}/index.html`);
   
   // Create the tray icon
   let appIcon = new Tray(`${__dirname}/logo.png`);
@@ -34,6 +38,8 @@ function initialize() {
             type: undefined,
             click: () => {
                 // TODO: Show Add Accounts screen 
+                addAccountPopup.show();
+                addAccountPopup.webContents.openDevTools();
             }
         }
     ]);
@@ -83,14 +89,14 @@ ipc.on('putDB', function (event, args) {
 });
 
 // Handle Get from database message
-ipc.on('getDBAll', function (event, args) {
+ipc.on('getDB', function (event, args) {
     
     // Request Id
     let id = args.id;
     
     // Find in database and send documents back to sender
     refreshAccounts((err, docs) => {
-        event.sender.send('putDBCompleted', {
+        event.sender.send('getDBCompleted', {
             err: err,
             docs: docs,
             id: id
