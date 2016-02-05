@@ -16,7 +16,7 @@ const db = new Datastore({ filename: `${__dirname}/data.db`, autoload: true });
 const openWindow = require('./openWindow')
 
 let appIcon = null;
-
+let addAccountPopup = null;
 
 // Initialize the Application
 function initialize() {
@@ -60,12 +60,18 @@ function createMenu() {
                 label: undefined
             },
             {
-                label: 'Add Account',
+                label: 'Manage Accounts',
                 type: undefined,
                 click: () => {
-                    // TODO: Show Add Accounts screen 
-                    const addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
-                    addAccountPopup.loadURL(`file://${__dirname}/index.html`);
+                    // Show Add Accounts screen
+                    if (!addAccountPopup) {
+                        addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
+                        addAccountPopup.loadURL(`file://${__dirname}/index.html`);    
+                        addAccountPopup.on('closed', function() {
+                            addAccountPopup = null;
+                        });
+                    } 
+                    
                     addAccountPopup.show();
                     addAccountPopup.webContents.openDevTools();
                 }
