@@ -1,5 +1,4 @@
 import React from 'react';
-import Helper from './helper';
 import Store from './store';
 import { Link } from 'react-router';
 
@@ -7,28 +6,7 @@ export default class AccountListItem extends React.Component {
     
     openTab() {
         Store.updateLastAccessed(this.props.id);
-        Helper.openWindow(() => _, this.props.url, this.props.username, this.props.password, false, true);   
-    }
-    
-    openWindow() {
-        Store.updateLastAccessed(this.props.id);
-        Helper.openWindow(() => _, this.props.url, this.props.username, this.props.password);   
-    }
-    
-    openIncognito() {
-        
-        Store.updateLastAccessed(this.props.id);
-        
-        Helper.openWindow((result) => {   
-            if (!result) {
-                this.props.onError(
-                    <div>
-                        <h2>This extension needs to be enabled in incognito mode in order for this to work</h2>
-                        <p>Click <a onClick={ Helper.gotoExtensionUrl } href="#">here</a> to do that.</p>
-                    </div>
-                );
-            }
-        }, this.props.url, this.props.username, this.props.password, true);   
+        Helper.openWindow(this.props.url, this.props.username, this.props.password);   
     }
     
     deleteRecord() {
@@ -69,9 +47,7 @@ export default class AccountListItem extends React.Component {
                             <use xlinkHref="./assets/icons/utility-sprite/svg/symbols.svg#delete"></use>
                         </svg>
                     </button>
-			        <button className="slds-button slds-button--brand slds-button--small" onClick={ this.openTab.bind(this) }>Tab</button>
-                    <button className="slds-button slds-button--brand slds-button--small" onClick={ this.openWindow.bind(this) }>Window</button>
-                    <button className="slds-button slds-button--brand slds-button--small" onClick={ this.openIncognito.bind(this) }>Incognito</button>
+			        <button className="slds-button slds-button--brand slds-button--small" onClick={ this.openTab.bind(this) }>Open</button>
 				</td>
 			</tr>
 		);

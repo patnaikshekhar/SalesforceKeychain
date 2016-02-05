@@ -19685,11 +19685,11 @@
 
 	var _listAccounts2 = _interopRequireDefault(_listAccounts);
 
-	var _editAccount = __webpack_require__(213);
+	var _editAccount = __webpack_require__(212);
 
 	var _editAccount2 = _interopRequireDefault(_editAccount);
 
-	var _template = __webpack_require__(214);
+	var _template = __webpack_require__(213);
 
 	var _template2 = _interopRequireDefault(_template);
 
@@ -19697,7 +19697,7 @@
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _saveAccounts = __webpack_require__(215);
+	var _saveAccounts = __webpack_require__(214);
 
 	var _saveAccounts2 = _interopRequireDefault(_saveAccounts);
 
@@ -24233,7 +24233,7 @@
 
 	var _accountListItem2 = _interopRequireDefault(_accountListItem);
 
-	var _errorDialog = __webpack_require__(212);
+	var _errorDialog = __webpack_require__(211);
 
 	var _errorDialog2 = _interopRequireDefault(_errorDialog);
 
@@ -24524,10 +24524,6 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _helper = __webpack_require__(211);
-
-	var _helper2 = _interopRequireDefault(_helper);
-
 	var _store = __webpack_require__(209);
 
 	var _store2 = _interopRequireDefault(_store);
@@ -24555,49 +24551,7 @@
 	        key: 'openTab',
 	        value: function openTab() {
 	            _store2.default.updateLastAccessed(this.props.id);
-	            _helper2.default.openWindow(function () {
-	                return _;
-	            }, this.props.url, this.props.username, this.props.password, false, true);
-	        }
-	    }, {
-	        key: 'openWindow',
-	        value: function openWindow() {
-	            _store2.default.updateLastAccessed(this.props.id);
-	            _helper2.default.openWindow(function () {
-	                return _;
-	            }, this.props.url, this.props.username, this.props.password);
-	        }
-	    }, {
-	        key: 'openIncognito',
-	        value: function openIncognito() {
-	            var _this2 = this;
-
-	            _store2.default.updateLastAccessed(this.props.id);
-
-	            _helper2.default.openWindow(function (result) {
-	                if (!result) {
-	                    _this2.props.onError(_react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(
-	                            'h2',
-	                            null,
-	                            'This extension needs to be enabled in incognito mode in order for this to work'
-	                        ),
-	                        _react2.default.createElement(
-	                            'p',
-	                            null,
-	                            'Click ',
-	                            _react2.default.createElement(
-	                                'a',
-	                                { onClick: _helper2.default.gotoExtensionUrl, href: '#' },
-	                                'here'
-	                            ),
-	                            ' to do that.'
-	                        )
-	                    ));
-	                }
-	            }, this.props.url, this.props.username, this.props.password, true);
+	            Helper.openWindow(this.props.url, this.props.username, this.props.password);
 	        }
 	    }, {
 	        key: 'deleteRecord',
@@ -24665,17 +24619,7 @@
 	                    _react2.default.createElement(
 	                        'button',
 	                        { className: 'slds-button slds-button--brand slds-button--small', onClick: this.openTab.bind(this) },
-	                        'Tab'
-	                    ),
-	                    _react2.default.createElement(
-	                        'button',
-	                        { className: 'slds-button slds-button--brand slds-button--small', onClick: this.openWindow.bind(this) },
-	                        'Window'
-	                    ),
-	                    _react2.default.createElement(
-	                        'button',
-	                        { className: 'slds-button slds-button--brand slds-button--small', onClick: this.openIncognito.bind(this) },
-	                        'Incognito'
+	                        'Open'
 	                    )
 	                )
 	            );
@@ -24689,69 +24633,6 @@
 
 /***/ },
 /* 211 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	function _openWindow(url, username, password, incognito, tab) {
-
-	    var secret = "dsaklhkh231231jhlkaasd";
-	    var eUsername = CryptoJS.TripleDES.encrypt(username, secret);
-	    var ePassword = CryptoJS.TripleDES.encrypt(password, secret);
-
-	    if (!tab) {
-	        chrome.windows.create({
-	            url: chrome.runtime.getURL('login.html') + '?a=' + url + '&b=' + ePassword + '&c=' + eUsername,
-	            incognito: incognito
-	        });
-	    } else {
-	        chrome.tabs.create({
-	            url: chrome.runtime.getURL('login.html') + '?a=' + url + '&b=' + ePassword + '&c=' + eUsername
-	        });
-	    }
-	}
-
-	exports.default = {
-	    openWindow: function openWindow(callback, url, username, password) {
-	        var incognito = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
-	        var tab = arguments.length <= 5 || arguments[5] === undefined ? false : arguments[5];
-
-	        if (incognito) {
-	            chrome.extension.isAllowedIncognitoAccess(function (isAllowedAccess) {
-	                if (!isAllowedAccess) {
-	                    callback(false);
-	                } else {
-	                    _openWindow(url, username, password, incognito, tab);
-	                    callback(true);
-	                }
-	            });
-	        } else {
-	            _openWindow(url, username, password, incognito, tab);
-	            callback(true);
-	        }
-	    },
-
-	    gotoExtensionUrl: function gotoExtensionUrl() {
-	        chrome.tabs.create({
-	            url: 'chrome://extensions/?id=' + chrome.runtime.id
-	        });
-	    },
-
-	    download: function download(accounts) {
-	        console.log(accounts);
-	        chrome.downloads.download({
-	            url: 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(accounts)),
-	            filename: 'export.json',
-	            saveAs: true
-	        });
-	    }
-	};
-
-/***/ },
-/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24808,7 +24689,7 @@
 	exports.default = ErrorDialog;
 
 /***/ },
-/* 213 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24829,7 +24710,7 @@
 
 	var _reactRouter = __webpack_require__(160);
 
-	var _errorDialog = __webpack_require__(212);
+	var _errorDialog = __webpack_require__(211);
 
 	var _errorDialog2 = _interopRequireDefault(_errorDialog);
 
@@ -25128,7 +25009,7 @@
 	exports.default = EditAccount;
 
 /***/ },
-/* 214 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25177,7 +25058,7 @@
 	exports.default = Template;
 
 /***/ },
-/* 215 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25196,10 +25077,6 @@
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _helper = __webpack_require__(211);
-
-	var _helper2 = _interopRequireDefault(_helper);
-
 	var _reactRouter = __webpack_require__(160);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -25209,6 +25086,7 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	//import Helper from './helper';
 
 	var IMPORT_STATE_IGNORE = 'Ignore';
 	var IMPORT_STATE_OVERWRITE = 'Overwrite';
@@ -25308,7 +25186,7 @@
 	        value: function exportAccounts() {
 	            var secret = this.state.secret;
 
-	            _helper2.default.download(this.state.accounts.filter(function (acc) {
+	            Helper.download(this.state.accounts.filter(function (acc) {
 	                return acc.selected;
 	            }).map(function (acc) {
 	                if (secret) {

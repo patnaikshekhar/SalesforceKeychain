@@ -1,6 +1,6 @@
 import React from 'react';
 import Store from './store';
-import Helper from './helper';
+//import Helper from './helper';
 import { Link } from 'react-router';
 
 let IMPORT_STATE_IGNORE = 'Ignore';
