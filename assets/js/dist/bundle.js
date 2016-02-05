@@ -25373,7 +25373,7 @@
 	                                    _react2.default.createElement(
 	                                        'svg',
 	                                        { 'aria-hidden': 'true', className: 'slds-icon slds-icon-standard-contact slds-icon--small' },
-	                                        _react2.default.createElement('use', { xlinkHref: '/assets/icons/standard-sprite/svg/symbols.svg#contact' })
+	                                        _react2.default.createElement('use', { xlinkHref: './assets/icons/standard-sprite/svg/symbols.svg#contact' })
 	                                    )
 	                                ),
 	                                _react2.default.createElement(

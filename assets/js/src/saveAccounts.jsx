@@ -225,7 +225,7 @@ export default class SaveAccounts extends React.Component {
                             <div className="slds-media slds-media--center slds-has-flexi-truncate">
                                 <div className="slds-media__figure">
                                     <svg aria-hidden="true" className="slds-icon slds-icon-standard-contact slds-icon--small">
-                                        <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+                                        <use xlinkHref="./assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
                                     </svg>
                                 </div>
                                 <div className="slds-media__body">
