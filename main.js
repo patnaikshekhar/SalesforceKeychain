@@ -41,6 +41,21 @@ app.on('window-all-closed', function () {
   }
 });
 
+function updateLastAccessed(accounts, id) {
+    
+    let accountsUpdated = accounts.map((acc) => {
+        if (acc.id == id) {
+            acc.lastAccessed = Date.now();
+        } 
+        
+        return acc;
+    });
+    
+    //accountsUpdated.sort((a1, a2) => a2.lastAccessed - a1.lastAccessed);
+    
+    insertAccounts(accountsUpdated, () => {});
+}
+
 function createMenu() {
     // Get the list of items from the store
     refreshAccounts((err, docs) => {
@@ -50,6 +65,7 @@ function createMenu() {
             type: 'radio',
             click: () => {
                 openWindow(doc.url, doc.username, doc.password);
+                updateLastAccessed(docs, doc.id);
             }
         }));
         
@@ -87,8 +103,21 @@ function createMenu() {
 
 // Refreshes the accounts and calls the callback
 function refreshAccounts(callback) {
-    db.find({}, function(err, docs) {
+    db.find({}).sort({ lastAccessed: -1 }).exec((err, docs) => {
         callback(err, docs);
+    });
+}
+
+// Insert Account into Database
+function insertAccounts(doc, callback) {
+    
+    db.remove({}, {multi: true}, (err) => {
+        db.insert(doc, function (err, newDoc) {
+            callback(err);
+            
+            // Refresh Menu
+            createMenu();
+        });
     });
 }
 
@@ -102,19 +131,13 @@ ipc.on('putDB', function (event, args) {
     let id = args.id;
     
     // Insert into database and send event back to sender
-    db.remove({}, {multi: true}, () => {
-        db.insert(doc, function (err, newDoc) {
-            // Send back done
-            event.sender.send('putDBCompleted', {
-                error: err,
-                id: id
-            });
-            
-            // Refresh Menu
-            createMenu();
-        });    
+    insertAccounts(doc, (err) => {
+        // Send back done
+        event.sender.send('putDBCompleted', {
+            error: err,
+            id: id
+        });
     });
-   
 });
 
 // Handle Get from database message
