@@ -81,7 +81,7 @@ function createMenu() {
                 click: () => {
                     // Show Add Accounts screen
                     if (!addAccountPopup) {
-                        addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
+                        addAccountPopup = new BrowserWindow({ width: 600, height: 600, show: false });
                         addAccountPopup.loadURL(`file://${__dirname}/index.html`);    
                         addAccountPopup.on('closed', function() {
                             addAccountPopup = null;
@@ -89,7 +89,7 @@ function createMenu() {
                     } 
                     
                     addAccountPopup.show();
-                    addAccountPopup.webContents.openDevTools();
+                    //addAccountPopup.webContents.openDevTools();
                 }
             }
         ]);
