@@ -1,54 +1,31 @@
 'use strict';
 
+// Electron related imports
 const electron = require('electron');
 const app = electron.app;
 const Tray = electron.Tray;
 const Menu = electron.Menu;
+const ipc = electron.ipcMain;
+const BrowserWindow = electron.BrowserWindow;  
+
+// Used as the Data Storage mechanism
 const Datastore = require('nedb');
 const db = new Datastore({ filename: `${__dirname}/data.db`, autoload: true });
-const ipc = electron.ipcMain;
-const BrowserWindow = electron.BrowserWindow;
+
+// Used for login
+const openWindow = require('./openWindow')
+
+let appIcon = null;
+
 
 // Initialize the Application
 function initialize() {
   
-  const addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
-  addAccountPopup.loadURL(`file://${__dirname}/index.html`);
-  
   // Create the tray icon
-  let appIcon = new Tray(`${__dirname}/logo.png`);
+  appIcon = new Tray(`${__dirname}/logo.png`);
+  appIcon.setToolTip('This is my application.');
   
-  // Get the list of items from the store
-  refreshAccounts((err, docs) => {
-    var storeMenuItems = [
-        { label: 'Item1', type: 'radio' },
-        { label: 'Item2', type: 'radio' },
-        { label: 'Item3', type: 'radio' },
-        { label: 'Item4', type: 'radio' }
-    ];
-    
-    // Concatanate the fixed items
-    var menuItems = storeMenuItems.concat([
-        {
-            type: 'separator',
-            label: undefined
-        },
-        {
-            label: 'Add Account',
-            type: undefined,
-            click: () => {
-                // TODO: Show Add Accounts screen 
-                addAccountPopup.show();
-                addAccountPopup.webContents.openDevTools();
-            }
-        }
-    ]);
-    
-    let contextMenu = Menu.buildFromTemplate(menuItems);
-    
-    appIcon.setToolTip('This is my application.');
-    appIcon.setContextMenu(contextMenu);      
-  });
+  createMenu();
 }
 
 // This method will be called when Electron has finished
@@ -64,6 +41,44 @@ app.on('window-all-closed', function () {
   }
 });
 
+function createMenu() {
+    // Get the list of items from the store
+    refreshAccounts((err, docs) => {
+        
+        var storeMenuItems = docs.map(doc => ({
+            label: doc.name,
+            type: 'radio',
+            click: () => {
+                openWindow(doc.url, doc.username, doc.password);
+            }
+        }));
+        
+        // Concatanate the fixed items
+        var menuItems = storeMenuItems.concat([
+            {
+                type: 'separator',
+                label: undefined
+            },
+            {
+                label: 'Add Account',
+                type: undefined,
+                click: () => {
+                    // TODO: Show Add Accounts screen 
+                    const addAccountPopup = new BrowserWindow({ width: 800, height: 600, show: false });
+                    addAccountPopup.loadURL(`file://${__dirname}/index.html`);
+                    addAccountPopup.show();
+                    addAccountPopup.webContents.openDevTools();
+                }
+            }
+        ]);
+        
+        let contextMenu = Menu.buildFromTemplate(menuItems);
+        
+        appIcon.setContextMenu(contextMenu);        
+    });
+    
+}
+
 // Refreshes the accounts and calls the callback
 function refreshAccounts(callback) {
     db.find({}, function(err, docs) {
@@ -74,8 +89,6 @@ function refreshAccounts(callback) {
 // Handle Set in database message
 ipc.on('putDB', function (event, args) {
     
-    console.log('putDB', args);
-    
     // Actual document to be inserted
     let doc = args.doc;
     
@@ -85,33 +98,39 @@ ipc.on('putDB', function (event, args) {
     // Insert into database and send event back to sender
     db.remove({}, {multi: true}, () => {
         db.insert(doc, function (err, newDoc) {
-            console.log('putDB-insert', err, newDoc);
+            // Send back done
             event.sender.send('putDBCompleted', {
                 error: err,
                 id: id
             });
+            
+            // Refresh Menu
+            createMenu();
         });    
     });
-    
+   
 });
 
 // Handle Get from database message
 ipc.on('getDB', function (event, args) {
-    
-    console.log('getDB', event, args);
     
     // Request Id
     let id = args.id;
     
     // Find in database and send documents back to sender
     refreshAccounts((err, docs) => {
-        console.log('getDB-result', docs);
         event.sender.send('getDBCompleted', {
             err: err,
             docs: docs,
             id: id
         });    
     });
+});
+
+// Handle open window message
+ipc.on('openWindow', function (event, args) {
+    // Find in database and send documents back to sender
+    openWindow(args.url, args.username, args.password);
 });
 
 app.on('activate', function () {});
