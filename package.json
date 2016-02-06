@@ -33,6 +33,7 @@
     "webpack": "^1.12.10"
   },
   "dependencies": {
+    "auto-launch": "^1.1.1",
     "history": "^1.17.0",
     "nedb": "^1.7.4",
     "opn": "^4.0.0",

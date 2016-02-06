@@ -7,20 +7,23 @@ const Tray = electron.Tray;
 const Menu = electron.Menu;
 const ipc = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;  
+const AutoLaunch = require('auto-launch');
 
 // Used as the Data Storage mechanism
 const Datastore = require('nedb');
 const db = new Datastore({ filename: `${__dirname}/data.db`, autoload: true });
 
 // Used for login
-const openWindow = require('./openWindow')
+const openWindow = require('./openWindow');
+
+// Get Settings
+const Settings = require('./settings');
 
 let appIcon = null;
 let addAccountPopup = null;
 
 // Initialize the Application
 function initialize() {
-  
   // Create the tray icon
   appIcon = new Tray(`${__dirname}/logo.png`);
   appIcon.setToolTip('This is my application.');
@@ -60,43 +63,90 @@ function createMenu() {
     // Get the list of items from the store
     refreshAccounts((err, docs) => {
         
-        var storeMenuItems = docs.map(doc => ({
-            label: doc.name,
-            type: 'radio',
-            click: () => {
-                openWindow(doc.url, doc.username, doc.password);
-                updateLastAccessed(docs, doc.id);
-            }
-        }));
-        
-        // Concatanate the fixed items
-        var menuItems = storeMenuItems.concat([
-            {
-                type: 'separator',
-                label: undefined
-            },
-            {
-                label: 'Manage Accounts',
-                type: undefined,
+        Settings.getAllSettings((settings) => {
+            console.log(settings);
+            var storeMenuItems = docs.map(doc => ({
+                label: doc.name,
+                type: 'radio',
                 click: () => {
-                    // Show Add Accounts screen
-                    if (!addAccountPopup) {
-                        addAccountPopup = new BrowserWindow({ width: 600, height: 600, show: false });
-                        addAccountPopup.loadURL(`file://${__dirname}/index.html`);    
-                        addAccountPopup.on('closed', function() {
-                            addAccountPopup = null;
-                        });
-                    } 
-                    
-                    addAccountPopup.show();
-                    //addAccountPopup.webContents.openDevTools();
+                    openWindow(doc.url, doc.username, doc.password);
+                    updateLastAccessed(docs, doc.id);
                 }
-            }
-        ]);
-        
-        let contextMenu = Menu.buildFromTemplate(menuItems);
-        
-        appIcon.setContextMenu(contextMenu);        
+            }));
+            
+            // Concatanate the fixed items
+            var menuItems = storeMenuItems.concat([
+                {
+                    type: 'separator',
+                    label: undefined
+                },
+                {
+                    label: 'Manage Accounts',
+                    type: undefined,
+                    click: () => {
+                        // Show Add Accounts screen
+                        if (!addAccountPopup) {
+                            addAccountPopup = new BrowserWindow({ width: 600, height: 600, show: false });
+                            addAccountPopup.loadURL(`file://${__dirname}/index.html`);    
+                            addAccountPopup.on('closed', function() {
+                                addAccountPopup = null;
+                            });
+                        } 
+                        
+                        addAccountPopup.show();
+                        //addAccountPopup.webContents.openDevTools();
+                    }
+                },
+                {
+                    label: 'Start when Computer boots',
+                    type: 'checkbox',
+                    value: settings.AutoLaunch ? false : true,
+                    click: (e) => {
+                        
+                        //Set Auto Launch
+                        var appLauncher = new AutoLaunch({
+                            name: 'Salesforce Keychain'
+                        });
+                        
+                        console.log('settings.AutoLaunch', settings.AutoLaunch);
+                        if (!settings.AutoLaunch) {
+                            console.log('trying to get enabled');
+                            // appLauncher.isEnabled((enabled) => {
+                            //     console.log('enabled', enabled);
+                            //     if(!enabled) {
+                                    appLauncher.enable(function(err) {
+                                        if (!err) {
+                                            settings = Object.assign(settings, { AutoLaunch: true} )
+                                            Settings.setSettings(settings, () => {});  
+                                        }
+                                    });    
+                            //     }
+                            // });  
+                        } else {
+                            // appLauncher.isEnabled((enabled) => {
+                            //     console.log('enabled', enabled);
+                            //     if(enabled) {
+                                    appLauncher.disable(function(err) {
+                                        if (!err) {
+                                            settings = Object.assign(settings, { AutoLaunch: false} )
+                                            Settings.setSettings(settings, () => {});  
+                                        }
+                                    });    
+                            //     }
+                            // });  
+                        }
+                        
+                        
+                        // Set Setting
+                    }
+                }
+            ]);
+            
+            let contextMenu = Menu.buildFromTemplate(menuItems);
+            
+            appIcon.setContextMenu(contextMenu);      
+        });
+              
     });
     
 }
