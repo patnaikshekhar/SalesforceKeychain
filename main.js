@@ -100,7 +100,7 @@ function createMenu() {
                 {
                     label: 'Start when Computer boots',
                     type: 'checkbox',
-                    value: settings.AutoLaunch ? false : true,
+                    checked: settings.AutoLaunch ? true : false,
                     click: (e) => {
                         
                         //Set Auto Launch
@@ -108,32 +108,20 @@ function createMenu() {
                             name: 'Salesforce Keychain'
                         });
                         
-                        console.log('settings.AutoLaunch', settings.AutoLaunch);
                         if (!settings.AutoLaunch) {
-                            console.log('trying to get enabled');
-                            // appLauncher.isEnabled((enabled) => {
-                            //     console.log('enabled', enabled);
-                            //     if(!enabled) {
-                                    appLauncher.enable(function(err) {
-                                        if (!err) {
-                                            settings = Object.assign(settings, { AutoLaunch: true} )
-                                            Settings.setSettings(settings, () => {});  
-                                        }
-                                    });    
-                            //     }
-                            // });  
+                            appLauncher.enable(function(err) {
+                                if (!err) {
+                                    settings = Object.assign(settings, { AutoLaunch: true} )
+                                    Settings.setSettings(settings, () => {});  
+                                }
+                            }); 
                         } else {
-                            // appLauncher.isEnabled((enabled) => {
-                            //     console.log('enabled', enabled);
-                            //     if(enabled) {
-                                    appLauncher.disable(function(err) {
-                                        if (!err) {
-                                            settings = Object.assign(settings, { AutoLaunch: false} )
-                                            Settings.setSettings(settings, () => {});  
-                                        }
-                                    });    
-                            //     }
-                            // });  
+                            appLauncher.disable(function(err) {
+                                if (!err) {
+                                    settings = Object.assign(settings, { AutoLaunch: false} )
+                                    Settings.setSettings(settings, () => {});  
+                                }
+                            });
                         }
                         
                         

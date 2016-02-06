@@ -11,26 +11,27 @@ module.exports = {
             if (err) {
                 callback({});        
             } else {
-                callback(docs.reduce((acc, setting) => {
+                
+                const settingsObject = docs.reduce((acc, setting) => {
                     
                     let obj = {};
                     obj[setting.name] = setting.value;
                     return Object.assign(acc, obj);
                         
-                }, docs, {}));
+                }, {})
+                
+                callback(settingsObject);
             }
         });
     
     },
     
     setSettings(obj, callback) {
-        console.log(obj);
         db.remove({}, {multi: true}, () => {
             const modifiedObject = Object.keys(obj).map((key) => ({
                 name: key,
                 value: obj[key]
             }));
-            
             db.insert(modifiedObject, (err, docs) => {
                 callback(err);    
             });    
