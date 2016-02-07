@@ -109,14 +109,14 @@ function createMenu() {
                         });
                         
                         if (!settings.AutoLaunch) {
-                            appLauncher.enable(function(err) {
+                            appLauncher.enable((err) => {
                                 if (!err) {
                                     settings = Object.assign(settings, { AutoLaunch: true} )
                                     Settings.setSettings(settings, () => {});  
                                 }
                             }); 
                         } else {
-                            appLauncher.disable(function(err) {
+                            appLauncher.disable((err) => {
                                 if (!err) {
                                     settings = Object.assign(settings, { AutoLaunch: false} )
                                     Settings.setSettings(settings, () => {});  
