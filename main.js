@@ -64,7 +64,6 @@ function createMenu() {
     refreshAccounts((err, docs) => {
         
         Settings.getAllSettings((settings) => {
-            console.log(settings);
             var storeMenuItems = docs.map(doc => ({
                 label: doc.name,
                 type: 'radio',
