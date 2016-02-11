@@ -1,5 +1,6 @@
 // Used to Open browser windows
 const opn = require('opn');
+const launcher = require( 'browser-launcher2' );
 
 // Use FS to create login.html file
 const fs = require('fs');
@@ -25,10 +26,21 @@ function createPage(url, username, password) {
     `    
 };
 
-module.exports = function(url, username, password) {
+module.exports = function(settings, url, username, password) {
     fs.writeFile(`${ __dirname }/login.html`, createPage(url, username, password), (err) => {
         if (!err) {
-            opn(`file://${__dirname}/login.html`, { app: 'google chrome'});
+            launcher.detect( function(available) {
+                
+                const browserSetting = settings.bowser ? settings.browser.toLowerCase() : 'safari';
+                
+                const filteredBySettings = available
+                    .filter((browser) => browser.name.toLowerCase() == browserSetting)
+                    .map((browser) => browser.command);
+                
+                if (filteredBySettings.length >= 1) {
+                    opn(`file://${__dirname}/login.html`, { app: filteredBySettings[0] });    
+                }
+            });
         }    
     });
 }

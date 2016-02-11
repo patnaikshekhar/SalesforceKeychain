@@ -68,8 +68,10 @@ function createMenu() {
                 label: doc.name,
                 type: 'radio',
                 click: () => {
-                    openWindow(doc.url, doc.username, doc.password);
-                    updateLastAccessed(docs, doc.id);
+                    Settings.getAllSettings((settings) => {
+                        openWindow(settings, doc.url, doc.username, doc.password);
+                        updateLastAccessed(docs, doc.id);
+                    });
                 }
             }));
             
@@ -196,7 +198,9 @@ ipc.on('getDB', function (event, args) {
 // Handle open window message
 ipc.on('openWindow', function (event, args) {
     // Find in database and send documents back to sender
-    openWindow(args.url, args.username, args.password);
+    Settings.getAllSettings((settings) => {
+        openWindow(settings, args.url, args.username, args.password);    
+    });
 });
 
 app.on('activate', function () {});
