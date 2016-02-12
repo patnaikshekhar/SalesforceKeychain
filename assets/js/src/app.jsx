@@ -5,6 +5,7 @@ import EditAccount from './editAccount';
 import Template from './template';
 import Store from './store';
 import SaveAccounts from './saveAccounts';
+import SelectBrowser from './selectBrowser';
 
 export default class App extends React.Component {
     
@@ -15,6 +16,7 @@ export default class App extends React.Component {
                     <IndexRoute component={ListAccounts} />
                     <Route path="add/:id" component={EditAccount} />
                     <Route path="save" component={SaveAccounts} />
+                    <Route path="browsers" component={SelectBrowser} />
                 </Route>
             </Router>  
        );

@@ -8,6 +8,7 @@ const Menu = electron.Menu;
 const ipc = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;  
 const AutoLaunch = require('auto-launch');
+const launcher = require( 'browser-launcher2' );
 
 // Used as the Data Storage mechanism
 const Datastore = require('nedb');
@@ -21,6 +22,7 @@ const Settings = require('./settings');
 
 let appIcon = null;
 let addAccountPopup = null;
+let browserSelectPopup = null;
 
 // Initialize the Application
 function initialize() {
@@ -128,6 +130,23 @@ function createMenu() {
                         
                         // Set Setting
                     }
+                },
+                {
+                    label: 'Select Browser',
+                    type: undefined,
+                    click: (e) => {
+                        // Show Add Accounts screen
+                        if (!browserSelectPopup) {
+                            browserSelectPopup = new BrowserWindow({ width: 600, height: 600, show: false });
+                            browserSelectPopup.loadURL(`file://${__dirname}/index.html#browsers`);    
+                            browserSelectPopup.on('closed', function() {
+                                browserSelectPopup = null;
+                            });
+                        } 
+                        
+                        browserSelectPopup.webContents.openDevTools();
+                        browserSelectPopup.show();
+                    }
                 }
             ]);
             
@@ -200,6 +219,39 @@ ipc.on('openWindow', function (event, args) {
     // Find in database and send documents back to sender
     Settings.getAllSettings((settings) => {
         openWindow(settings, args.url, args.username, args.password);    
+    });
+});
+
+// Gets a list of browsers and sends it back to the client
+ipc.on('getBrowsers', function (event, args) {
+    // Request Id
+    let id = args.id;
+    
+    Settings.getAllSettings((settings) => {
+        // Use Browser Launcher to get list of browsers
+        launcher.detect(function(available) {
+            event.sender.send('getBrowsersCompleted', {
+                id: id,
+                browsers: available.map((b) => b.name),
+                selected: settings.browser
+            });
+        });
+    });
+});
+
+ipc.on('setDefaultBrowser', function (event, args) {
+    // Request Id
+    let id = args.id;
+    
+    // Get latest settings before setting
+    Settings.getAllSettings((settings) => {
+        Settings.setSettings(
+            Object.assign(settings, { browser: args.name } ), 
+            () => {
+                event.sender.send('setDefaultBrowserCompleted', {
+                    id: id
+                });    
+            });
     });
 });
 

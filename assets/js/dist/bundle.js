@@ -19701,6 +19701,10 @@
 
 	var _saveAccounts2 = _interopRequireDefault(_saveAccounts);
 
+	var _selectBrowser = __webpack_require__(215);
+
+	var _selectBrowser2 = _interopRequireDefault(_selectBrowser);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19729,7 +19733,8 @@
 	                    { path: '/', component: _template2.default },
 	                    _react2.default.createElement(_reactRouter.IndexRoute, { component: _listAccounts2.default }),
 	                    _react2.default.createElement(_reactRouter.Route, { path: 'add/:id', component: _editAccount2.default }),
-	                    _react2.default.createElement(_reactRouter.Route, { path: 'save', component: _saveAccounts2.default })
+	                    _react2.default.createElement(_reactRouter.Route, { path: 'save', component: _saveAccounts2.default }),
+	                    _react2.default.createElement(_reactRouter.Route, { path: 'browsers', component: _selectBrowser2.default })
 	                )
 	            );
 	        }
@@ -25086,7 +25091,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	//import Helper from './helper';
 
 	var IMPORT_STATE_IGNORE = 'Ignore';
 	var IMPORT_STATE_OVERWRITE = 'Overwrite';
@@ -25499,6 +25503,112 @@
 	SaveAccounts.contextTypes = {
 	    history: _react2.default.PropTypes.object
 	};
+
+/***/ },
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function capitalizeFirstLetter(string) {
+	    return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+
+	var SelectBrowser = function (_React$Component) {
+	    _inherits(SelectBrowser, _React$Component);
+
+	    function SelectBrowser() {
+	        _classCallCheck(this, SelectBrowser);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SelectBrowser).apply(this, arguments));
+	    }
+
+	    _createClass(SelectBrowser, [{
+	        key: "componentWillMount",
+	        value: function componentWillMount() {
+	            var _this2 = this;
+
+	            this.setState({
+	                browsers: []
+	            });
+
+	            ipcBrowsers.getBrowsers(function (browsers) {
+	                _this2.setState({
+	                    browsers: browsers
+	                });
+	            });
+	        }
+	    }, {
+	        key: "setBrowser",
+	        value: function setBrowser(browser, e) {
+	            ipcBrowsers.setDefaultBrowser(browser, function () {});
+	        }
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            var _this3 = this;
+
+	            var browsers = this.state.browsers.map(function (b) {
+	                return _react2.default.createElement(
+	                    "tr",
+	                    { key: b },
+	                    _react2.default.createElement(
+	                        "td",
+	                        null,
+	                        _react2.default.createElement("input", { type: "radio", name: "browser", onClick: _this3.setBrowser.bind(_this3, b) })
+	                    ),
+	                    _react2.default.createElement(
+	                        "td",
+	                        null,
+	                        capitalizeFirstLetter(b)
+	                    )
+	                );
+	            });
+
+	            return _react2.default.createElement(
+	                "div",
+	                null,
+	                _react2.default.createElement(
+	                    "h1",
+	                    null,
+	                    "Select Browser"
+	                ),
+	                _react2.default.createElement(
+	                    "table",
+	                    { className: "slds-table slds-table--bordered" },
+	                    _react2.default.createElement("thead", { className: "slds-text-heading--label" }),
+	                    _react2.default.createElement(
+	                        "tbody",
+	                        { className: "account-list-table-body" },
+	                        browsers
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return SelectBrowser;
+	}(_react2.default.Component);
+
+	exports.default = SelectBrowser;
 
 /***/ }
 /******/ ]);
