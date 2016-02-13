@@ -68,7 +68,7 @@ function createMenu() {
         Settings.getAllSettings((settings) => {
             var storeMenuItems = docs.map(doc => ({
                 label: doc.name,
-                type: 'radio',
+                type: undefined,
                 click: () => {
                     Settings.getAllSettings((settings) => {
                         openWindow(settings, doc.url, doc.username, doc.password);
