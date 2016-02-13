@@ -8,25 +8,31 @@ export default class SelectBrowser extends React.Component {
     
     componentWillMount() {
         this.setState({
-            browsers: []
+            browsers: [],
+            defaultBrowser: undefined
         });
         
-        ipcBrowsers.getBrowsers((browsers) => {
+        ipcBrowsers.getBrowsers((browsers, selected) => {
             this.setState({
-                browsers: browsers
+                browsers: browsers,
+                defaultBrowser: selected
             });
         });      
     }
     
     setBrowser(browser, e) {
-        ipcBrowsers.setDefaultBrowser(browser, () => {});
+        ipcBrowsers.setDefaultBrowser(browser, () => {
+            this.setState(Object.assign(this.state, {
+                defaultBrowser: browser
+            }));    
+        });
     }
     
     render() {
         
         let browsers = this.state.browsers.map(b => 
             <tr key={b}>
-                    <td><input type="radio" name="browser" onClick={this.setBrowser.bind(this, b)}/></td>
+                    <td><input type="radio" name="browser" onChange={this.setBrowser.bind(this, b)} checked={b == this.state.defaultBrowser } /></td>
                     <td>{ capitalizeFirstLetter(b) }</td>
             </tr>
         );

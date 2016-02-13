@@ -25547,24 +25547,32 @@
 	            var _this2 = this;
 
 	            this.setState({
-	                browsers: []
+	                browsers: [],
+	                defaultBrowser: undefined
 	            });
 
-	            ipcBrowsers.getBrowsers(function (browsers) {
+	            ipcBrowsers.getBrowsers(function (browsers, selected) {
 	                _this2.setState({
-	                    browsers: browsers
+	                    browsers: browsers,
+	                    defaultBrowser: selected
 	                });
 	            });
 	        }
 	    }, {
 	        key: "setBrowser",
 	        value: function setBrowser(browser, e) {
-	            ipcBrowsers.setDefaultBrowser(browser, function () {});
+	            var _this3 = this;
+
+	            ipcBrowsers.setDefaultBrowser(browser, function () {
+	                _this3.setState(Object.assign(_this3.state, {
+	                    defaultBrowser: browser
+	                }));
+	            });
 	        }
 	    }, {
 	        key: "render",
 	        value: function render() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var browsers = this.state.browsers.map(function (b) {
 	                return _react2.default.createElement(
@@ -25573,7 +25581,7 @@
 	                    _react2.default.createElement(
 	                        "td",
 	                        null,
-	                        _react2.default.createElement("input", { type: "radio", name: "browser", onClick: _this3.setBrowser.bind(_this3, b) })
+	                        _react2.default.createElement("input", { type: "radio", name: "browser", onChange: _this4.setBrowser.bind(_this4, b), checked: b == _this4.state.defaultBrowser })
 	                    ),
 	                    _react2.default.createElement(
 	                        "td",

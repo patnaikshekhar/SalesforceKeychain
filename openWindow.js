@@ -31,12 +31,9 @@ module.exports = function(settings, url, username, password) {
         if (!err) {
             launcher.detect( function(available) {
                 const browserSetting = settings.browser ? settings.browser.toLowerCase() : 'safari';
-                console.log('browserSetting', browserSetting);
                 const filteredBySettings = available
                     .filter((browser) => browser.name.toLowerCase() == browserSetting)
                     .map((browser) => browser.command);
-                
-                console.log('filteredBySettings', filteredBySettings[0]);
                 
                 if (filteredBySettings.length >= 1) {
                     opn(`file://${__dirname}/login.html`, { app: filteredBySettings[0] });    
