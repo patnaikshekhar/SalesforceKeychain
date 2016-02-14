@@ -26,6 +26,10 @@ let browserSelectPopup = null;
 
 // Initialize the Application
 function initialize() {
+    
+  // Hide doc icon
+  app.dock.hide();
+  
   // Create the tray icon
   appIcon = new Tray(`${__dirname}/logo.png`);
   appIcon.setToolTip('This is my application.');
@@ -144,8 +148,19 @@ function createMenu() {
                             });
                         } 
                         
-                        browserSelectPopup.webContents.openDevTools();
+                        //browserSelectPopup.webContents.openDevTools();
                         browserSelectPopup.show();
+                    }
+                },
+                {
+                    type: 'separator',
+                    label: undefined
+                },
+                {
+                    label: 'Exit',
+                    type: undefined,
+                    click: (e) => {
+                        app.quit();
                     }
                 }
             ]);

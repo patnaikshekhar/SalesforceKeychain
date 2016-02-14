@@ -4,3 +4,5 @@ node_modules
 npm-debug.log
 login.html
 SalesforceKeychain-darwin-x64
+settings.db
+data.db
