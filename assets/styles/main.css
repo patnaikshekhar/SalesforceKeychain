@@ -53,3 +53,7 @@ body {
 .account-list-table-body td {
     padding: 0.2em;    
 }
+
+.larger-table-text {
+    font-size: 1.5em;
+}

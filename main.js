@@ -141,7 +141,7 @@ function createMenu() {
                     click: (e) => {
                         // Show Add Accounts screen
                         if (!browserSelectPopup) {
-                            browserSelectPopup = new BrowserWindow({ width: 600, height: 600, show: false });
+                            browserSelectPopup = new BrowserWindow({ width: 500, height: 400, show: false });
                             browserSelectPopup.loadURL(`file://${__dirname}/index.html#browsers`);    
                             browserSelectPopup.on('closed', function() {
                                 browserSelectPopup = null;
@@ -168,8 +168,7 @@ function createMenu() {
             let contextMenu = Menu.buildFromTemplate(menuItems);
             
             appIcon.setContextMenu(contextMenu);      
-        });
-              
+        });   
     });
     
 }

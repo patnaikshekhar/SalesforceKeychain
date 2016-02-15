@@ -39,8 +39,8 @@ export default class SelectBrowser extends React.Component {
         
         return (
             <div>
-                <h1>Select Browser</h1>
-                <table className="slds-table slds-table--bordered">
+                <h1 className="slds-text-heading--large margin-on-top slight-margin-left">Select Browser</h1>
+                <table className="slds-table slds-table--bordered larger-table-text margin-on-top">
                     <thead className="slds-text-heading--label">
                     </thead>
                     <tbody className="account-list-table-body">
