@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+*.db
+npm-debug.log
+login.html
+SalesforceKeychain-darwin-x64
+settings.db
+data.db

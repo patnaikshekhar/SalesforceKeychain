@@ -1,0 +1,59 @@
+body {
+	min-width: 600px;
+	min-height: 600px;
+    font-size: 0.65em;
+}
+
+.margin-on-top {
+    margin-top: 30px; 
+}
+
+.slight-margin-left {
+    margin-left: 5px;
+}
+
+.accountlist {
+    max-height: 550px;
+    overflow-y: scroll;
+}
+
+.search-input {
+    padding-left: 10px;
+}
+
+.export-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.background-success {
+    background-color: rgb(4, 132, 75) !important;
+    border-color:    rgb(4, 132, 75) !important;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.import-export-table-height {
+    height: 410px;
+    overflow-y: scroll;
+}
+
+.encryption-para {
+    margin-top: 8px;
+    font-size: 0.5em;
+}
+
+.account-list-table-body td {
+    padding: 0.2em;    
+}
+
+.larger-table-text {
+    font-size: 1.5em;
+}
