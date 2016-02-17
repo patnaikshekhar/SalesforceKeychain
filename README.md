@@ -11,9 +11,9 @@ This is a mini application which helps you store your Salesforce logins for muti
 
 ## Download
 
-The latest build can be downloaded [here](TODO)
+The latest build can be downloaded [here](https://s3-us-west-2.amazonaws.com/salesforcekeychain/SalesforceKeychain.zip)
 
-Start the Application by clicking on the icon. An icon will appear on your taskbar. Click on Manage Accounts to add a new Salesforce Account.
+You will need to open the archive and start the Application by clicking on the icon. An icon will appear on your taskbar. Click on Manage Accounts to add a new Salesforce Account.
 Once the account has been added it would appear when you click on the icon. The list of accounts is automatically sorted based on last accessed.
 
 ## Tutorial
