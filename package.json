@@ -1,27 +1,26 @@
 {
-  "name": "electron-quick-start",
+  "name": "Salesforce Keychain",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "This is a mini application which helps you store your Salesforce logins for mutiple Sandboxes.",
   "main": "main.js",
   "scripts": {
     "start": "webpack;electron main.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atom/electron-quick-start.git"
+    "url": "git+https://github.com/patnaikshekhar/SalesforceKeychain.git"
   },
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
+    "Salesforce",
+    "Logins",
+    "Keychain"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Shekhar Patnaik",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atom/electron-quick-start/issues"
+    "url": "https://github.com/patnaikshekhar/SalesforceKeychain/issues"
   },
-  "homepage": "https://github.com/atom/electron-quick-start#readme",
+  "homepage": "https://github.com/patnaikshekhar/SalesforceKeychain#readme",
   "devDependencies": {
     "babel-core": "^6.4.0",
     "babel-loader": "^6.2.1",
