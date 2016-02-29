@@ -18,7 +18,7 @@ Once the account has been added it would appear when you click on the icon. The 
 
 ## Tutorial
 
-A tutorial of the application can be accessed [here](TODO)
+A tutorial of the application can be accessed [here](https://youtu.be/ydQr4s4Kqfk)
 
 ## Technologies Used
 
